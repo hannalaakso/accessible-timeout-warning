@@ -134,8 +134,8 @@
           var secondsLeft = parseInt(seconds % 60, 10)
           var timerExpired = minutesLeft < 1 && secondsLeft < 1
 
-          var minutesText = minutesLeft > 0 ? minutesLeft + ' minute' + (minutesLeft > 1 ? 's' : '') + '' : ' '
-          var secondsText = secondsLeft >= 1 ? ' ' + secondsLeft + ' second' + (secondsLeft > 1 ? 's' : '') + '' : ''
+          var minutesText = minutesLeft > 0 ? '<span class="tabular-numbers">' + minutesLeft + '</span> minute' + (minutesLeft > 1 ? 's' : '') + '' : ' '
+          var secondsText = secondsLeft >= 1 ? ' <span class="tabular-numbers">' + secondsLeft + '</span> second' + (secondsLeft > 1 ? 's' : '') + '' : ''
           var atMinutesNumberAsText = ''
           var atSecondsNumberAsText = ''
 
@@ -171,7 +171,7 @@
           } else {
             seconds--
 
-            $timer.text(text + extraText)
+            $timer.html(text + extraText)
 
             if (minutesLeft < 1 && secondsLeft < 20) {
               $accessibleTimer.attr('aria-live', 'assertive')
