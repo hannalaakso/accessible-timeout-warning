@@ -21,9 +21,10 @@
     idleMinutesBeforeTimeOut: $('#js-modal-dialog').data('minutes-idle-timeout'),
     timeOutRedirectUrl: $('#js-modal-dialog').data('url-redirect'),
     minutesTimeOutModalVisible: $('#js-modal-dialog').data('minutes-modal-visible'),
+    timeUserLastInteractedWithPage: '',
 
     bindUIElements: function () {
-       setTimeout(GOVUK.modalDialog.openDialog, 4000) //debug
+       // setTimeout(GOVUK.modalDialog.openDialog, 4000) //debug
 
       GOVUK.modalDialog.$openButton.on('click', function (e) {
         GOVUK.modalDialog.openDialog()
@@ -47,6 +48,7 @@
       return GOVUK.modalDialog.$timer.length > 0 && GOVUK.modalDialog.$accessibleTimer.length > 0 && GOVUK.modalDialog.idleMinutesBeforeTimeOut && GOVUK.modalDialog.minutesTimeOutModalVisible && GOVUK.modalDialog.timeOutRedirectUrl
     },
     openDialog: function () {
+      // TO DO: get last interactive time from server to see if modal should be opened
       if (!GOVUK.modalDialog.isDialogOpen()) {
         $('html, body').addClass(GOVUK.modalDialog.dialogIsOpenClass)
         GOVUK.modalDialog.saveLastFocusedEl()
@@ -125,6 +127,8 @@
       var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 
       if (minutes) {
+        // TO DO: Contact server to find last active time, in case modal is open in another tab, and update time left here accordingly
+
         var seconds = 60 * minutes
 
         $timer.text(minutes + ' minute' + (minutes > 1 ? 's' : ''));
@@ -167,7 +171,12 @@
           if (timerExpired) {
             $timer.text('You are about to be redirected')
             $accessibleTimer.text('You are about to be redirected')
+            //TO DO: tell server to reset userlastinteractedwithpage
+            if (window.localStorage) {
+              window.localStorage.setItem('timeUserLastInteractedWithPage', '')
+            }
             setTimeout(GOVUK.modalDialog.redirect, 4000)
+
           } else {
             seconds--
 
@@ -217,6 +226,8 @@
       var milliSeconds
       var timer
 
+      GOVUK.modalDialog.checkIfShouldHaveTimedOut()
+
       if (idleMinutes) {
         milliSeconds = idleMinutes * 60000
 
@@ -231,7 +242,38 @@
 
       function resetTimer () {
         clearTimeout(timer)
+
+        // TO DO: tell server at intervals that user is active instead of storing last interaction time locally
+        if (window.localStorage) {
+          window.localStorage.setItem('timeUserLastInteractedWithPage', new Date())
+        }
+
         timer = setTimeout(GOVUK.modalDialog.openDialog, milliSeconds)
+      }
+    },
+    // Do a timestamp comparison when the page regains focus to check if the user should have been timed out already
+    checkIfShouldHaveTimedOut: function () {
+      window.onfocus = function () {
+        // Debugging tip: Above event doesn't kick in in Chrome if you have Inspector panel open and have clicked on it
+        // as it is now the active element. Click on the window to make it active before moving to another tab.
+        if (window.localStorage) {
+          // TO DO: timeUserLastInteractedWithPage should in fact come from the server
+          var timeUserLastInteractedWithPage = new Date(window.localStorage.getItem('timeUserLastInteractedWithPage'))
+
+          var seconds = Math.abs((timeUserLastInteractedWithPage - new Date()) / 1000)
+
+          // TO DO: use both idlemin and timemodalvisible
+          if (seconds > GOVUK.modalDialog.idleMinutesBeforeTimeOut * 60) {
+
+        //  if (seconds > 60) {
+            GOVUK.modalDialog.redirect()
+          }
+
+          //   // TO DO: open modal if advised so by the server, tell modal how many seconds are left
+          // else if () {
+          //   GOVUK.modalDialog.openDialog()
+          // }
+        }
       }
     },
     redirect: function () {
