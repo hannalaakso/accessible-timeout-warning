@@ -47,3 +47,13 @@ have many keyboard commands for interacting with content and it's important that
 
 ### Escape:
 * Closes the dialog.
+
+## To run locally - WIP
+
+```
+npm install
+```
+
+```
+npm start
+```
