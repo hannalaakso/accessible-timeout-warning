@@ -2,21 +2,18 @@
 
 Timeout warning is a component that:
 
-Is shown after a period of inactivity
-Warns users before a session timeout that they’re about to time out
-Allows users to extend their session
-Offers alternate options if they don’t want to extend
-Requests user to take action and tells them how much time they have to do so
-Provides information to assistive technology so users with access needs are well supported
-
-
-## Accessibility acceptance criteria - WIP
+- Is shown after a period of inactivity
+- Warns users before a session timeout that they’re about to time out
+- Allows users to extend their session
+- Offers alternate options if they don’t want to extend
+- Requests user to take action and tells them how much time they have to do so
+- Provides information to assistive technology so users with access needs are well supported
 
 ## User story
 
 As an Assistive Technology (AT) user, I want to be informed that a modal dialog has opened, what its purpose is, and how to action / close it.
 
-## Acceptance criteria
+## Accessibility acceptance criteria
 
 The modal dialog must:
 1. Be focusable with a keyboard. (If an element eg. button triggers the dialog, that element must also be keyboard focusable.)
@@ -33,9 +30,9 @@ Where multiple modals are open, above criteria apply to top-most one.
 
 ## Keyboard Interaction
 
-In draft: "Screen reader users may not rely on the tab key to interact with the dialogue content. Screen readers
-have many keyboard commands for interacting with content and it's important that the way the dialogue is implemented doesn't prevent themfrom being usable."
-> This is a good point. Could we use [this](https://www.paciellogroup.com/blog/2015/01/basic-screen-reader-commands-for-accessibility-testing/) as the list of commands for testing?
+- Screen reader users may not rely on the tab key to interact with the dialogue content.
+- Screen readers have many keyboard commands for interacting with content and it's important that the way the dialogue is implemented doesn't prevent them from being usable.
+- Could we use [this](https://www.paciellogroup.com/blog/2015/01/basic-screen-reader-commands-for-accessibility-testing/) as the list of commands for testing?
 
 ### Tab:
 * Moves focus to the next focusable element inside the dialog.
@@ -48,12 +45,20 @@ have many keyboard commands for interacting with content and it's important that
 ### Escape:
 * Closes the dialog.
 
-## To run locally - WIP
+## To run locally
 
-```
-npm install
-```
+Run `npm install`
 
-```
-npm start
-```
+Run `npm start`
+
+## To integrate this component into your app
+
+1. Include the markup from `app/views/includes/modal_dialog.html` on your page.
+
+2. The script looks for a `#content` div on the page to set the `inert` attribute. Please change this to match name of your main container in `makePageContentInert` and `removeInertFromPageContent` in `javascripts/modal-dialog.js`. This indicates the active part of the page to screenreaders.
+
+3. Include `sass/patterns/_modal-dialog.scss` as part of your SASS.
+
+4. Include `/javascripts/dialog.polyfill.0.4.3.js` and `javascripts/modal-dialog.js` on your page or as part of your JavaScript bundle.
+
+5. Initialise the JavaScript in `javascripts/application.js` with  `GOVUK.modalDialog.init()`
