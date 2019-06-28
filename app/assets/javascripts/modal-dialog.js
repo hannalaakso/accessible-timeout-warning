@@ -24,7 +24,6 @@
     timeUserLastInteractedWithPage: '',
 
     bindUIElements: function () {
-      setTimeout(GOVUK.modalDialog.openDialog, 6000) //debug
 
       GOVUK.modalDialog.$openButton.on('click', function (e) {
         GOVUK.modalDialog.openDialog()
