@@ -6,6 +6,7 @@
 
   // Modal dialog prototype
   GOVUK.modalDialog = {
+    containerSelector: '#content',
     el: document.getElementById('js-modal-dialog'),
     $el: $('#js-modal-dialog'),
     $lastFocusedEl: null,
@@ -104,17 +105,17 @@
     // Set page content to inert to indicate to screenreaders it's inactive
     // NB: This will look for #content for toggling inert state
     makePageContentInert: function () {
-      if (document.querySelector('#content')) {
-        document.querySelector('#content').inert = true
-        document.querySelector('#content').setAttribute('aria-hidden', 'true')
+      if (document.querySelector(this.containerSelector)) {
+        document.querySelector(this.containerSelector).inert = true
+        document.querySelector(this.containerSelector).setAttribute('aria-hidden', 'true')
       }
     },
     // Make page content active when modal is not open
     // NB: This will look for #content for toggling inert state
     removeInertFromPageContent: function () {
-      if (document.querySelector('#content')) {
-        document.querySelector('#content').inert = false
-        document.querySelector('#content').setAttribute('aria-hidden', 'false')
+      if (document.querySelector(this.containerSelector)) {
+        document.querySelector(this.containerSelector).inert = false
+        document.querySelector(this.containerSelector).setAttribute('aria-hidden', 'false')
       }
     },
     // Starts a timer. If modal not closed before time out + 4 seconds grace period, user is redirected.
