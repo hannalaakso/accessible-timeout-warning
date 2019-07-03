@@ -1,69 +1,89 @@
-# Contribution guidelines
+# Contributing
+We love contributions! We've compiled these docs to help you understand our contribution guidelines. If you still have questions, please [contact us](https://design-system.service.gov.uk/#support), we'd be super happy to help.
 
-We really like contributions and bug reports, in fact the project wouldn't have got to this stage without them.
-We do have a few guidelines to bear in mind.
+## Contents of this file
 
-## Community
+### For contributors
+- [Code of conduct](#code-of-conduct)
+- [Application architecture](#application-architecture)
+- [Running locally](#running-locally)
+- [Conventions to follow](#conventions-to-follow)
+  - [Indentation and whitespace](#indentation-and-whitespace)
+  - [CSS](#css)
+  - [JavaScript](#javascript)
+  - [Components and Nunjucks API](#components-and-nunjucks-api)
+- [Testing and linting](#testing-and-linting)
+- [Supported browsers](#supported-browsers)
+- [Commit hygiene](#commit-hygiene)
+- [Updating Changelog](#updating-changelog)
+- [Testing a release](#testing-a-release)
 
-We have two Slack channels for the Prototype kit. You'll need a government email address to join them.
+### For maintainers
+- [Application tasks](#running-application-tasks)
+- [Deploying](#deploying)
+- [Versioning](#versioning)
+- [Releasing a new version](#releasing-a-new-version)
 
-* [Slack channel for users of the prototype kit](https://ukgovernmentdigital.slack.com/messages/prototype-kit/)
-* [Slack channel for developers of the prototype kit](https://ukgovernmentdigital.slack.com/messages/prototype-kit-dev/)
 
-## Raising bugs
+## Code of Conduct
+Please read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before contributing.
 
-When raising bugs please explain the issue in good detail and provide a guide to how to replicate it.
-When describing the bug it's useful to follow the format:
+## Application architecture
 
-- what you did
-- what you expected to happen
-- what happened
+See [application architecture](/docs/contributing/application-architecture.md) for an overview of the directories in this repository.
 
-## Suggesting features
+## Running locally
 
-Please raise feature requests as issues before contributing any code.
+See [running locally](/docs/contributing/running-locally.md).
 
-This ensures they are discussed properly before any time is spent on them.
-
-## GOV.UK Elements
-
-The project contains code taken from the [GOV.UK Elements](https://github.com/alphagov/govuk_elements/) project.
-Please check that any issues related to that code are raised with that project, not this one.
-
-## Contributing code
+## Conventions to follow
 
 ### Indentation and whitespace
 
-Your JavaScript code should pass [linting](docs/linting.md).
+2-space, soft-tabs only. No trailing whitespace.
 
-For anything else, maintain 2-space, soft-tabs only indentation. No trailing whitespace.
+### CSS
 
-### Versioning
+See our [coding standards for CSS](/docs/contributing/coding-standards/css.md) and [testing and linting](/docs/contributing/testing-and-linting.md).
 
-Follow the guidelines on [semver.org](http://semver.org/) for assigning version
-numbers.
+### JavaScript
 
-Versions should only be changed in a commit of their own, in a pull request of
-their own. This alerts team members to the new version and allows for
-last-minute scrutiny before the new version is released. Also, by raising a
-separate pull request, we avoid version number conflicts between feature
-branches.
+See our [coding standards for JavaScript](/docs/contributing/coding-standards/js.md) and [testing and linting](/docs/contributing/testing-and-linting.md).
 
-### Commit hygiene
+### Components and Nunjucks API
+
+See our [coding standards for components](/docs/contributing/coding-standards/components.md), [coding standards for Nunjucks macros](/docs/contributing/coding-standards/nunjucks-api.md) and [testing and linting](/docs/contributing/testing-and-linting.md).
+
+## Testing and linting
+
+See [testing and linting](/docs/contributing/testing-and-linting.md).
+
+## Supported browsers
+Your contribution needs to work with certain browsers as set out in [README](README.md#browser-support). See also [supporting Internet Explorer 8](/docs/installation/supporting-internet-explorer-8.md).
+
+## Supported assistive technology
+Your contribution needs to work with certain assistive technology as set out in [README](README.md#assistive-technology-support).
+
+## Commit hygiene
 
 Please see our [git style guide](https://github.com/alphagov/styleguides/blob/master/git.md)
 which describes how we prefer git history and commit messages to read.
 
-## To release a new version
+## Updating Changelog
 
-Update [CHANGELOG.md](https://github.com/alphagov/govuk_prototype_kit/blob/master/CHANGELOG.md) to summarise the changes made since the last release.
+See the versioning documentation for [updating the changelog](/docs/contributing/versioning.md#updating-changelog)
 
-To see the commits to be summarised in the changelog since the last release, [compare the latest-release branch with master](https://github.com/alphagov/govuk_prototype_kit/compare/latest-release...master).
+## Testing a release
+If you need to test a release, for example if you're contributing a new component see [Publishing pre-release of GOV.UK Frontend](/docs/contributing/publishing-a-pre-release.md).
 
-Propose a new version number in [VERSION.txt](https://github.com/alphagov/govuk_prototype_kit/blob/master/VERSION.txt) and update line 4 in [package.json](https://github.com/alphagov/govuk_prototype_kit/blob/master/package.json#L4) with the new version number.
+## Application tasks
 
-Open a new pull request with a single commit including the above changes.
+See [tasks](/docs/contributing/tasks.md).
 
-[Here is an example for v6.1.0](https://github.com/alphagov/govuk_prototype_kit/commit/53e36d79a994ce3649b53f4008370cd75068c27c).
+## Deploying
 
-Once merged into master a new version will be built.
+See [deploying](/docs/contributing/deploying.md).
+
+## Releasing a new version
+
+See [publishing](/docs/contributing/publishing.md).
