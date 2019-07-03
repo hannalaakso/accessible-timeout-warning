@@ -8,6 +8,7 @@ function TimeoutWarning ($module) {
   this.$closeButton = $module.querySelector('.js-dialog-close')
   this.$cancelButton = $module.querySelector('.js-dialog-cancel')
   this.appOverlay = 'govuk-timeout-warning-overlay'
+  this.$fallBackElement = document.querySelector('.govuk-timeout-warning-fallback')
   this.timers = []
   // Timer specific markup. If these are not present, timeout and redirection are disabled
   this.$timer = $module.querySelector('#js-timeout-warning .timer')
@@ -29,7 +30,12 @@ TimeoutWarning.prototype.init = function () {
   if (this.$module) {
     // Native dialog is not supported by browser so use polyfill
     if (typeof HTMLDialogElement !== 'function') {
-      window.dialogPolyfill.registerDialog(this.$module)
+      try {
+        window.dialogPolyfill.registerDialog(this.$module)
+      } catch (error) {
+        this.$fallBackElement.classList.add('govuk-!-display-block')
+        return
+      }
     }
     this.bindUIElements()
     this.escClose()
