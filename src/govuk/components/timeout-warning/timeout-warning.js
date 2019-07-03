@@ -6,21 +6,21 @@
 
   // Modal dialog prototype
   GOVUK.modalDialog = {
-    el: document.getElementById('js-modal-dialog'),
-    $el: $('#js-modal-dialog'),
+    el: document.getElementById('js-timeout-warning'),
+    $el: $('#js-timeout-warning'),
     $lastFocusedEl: null,
     $openButton: $('#openModal'),
-    $closeButton: $('.modal-dialog .js-dialog-close'),
-    $cancelButton: $('.modal-dialog .js-dialog-cancel'),
-    dialogIsOpenClass: 'dialog-is-open',
+    $closeButton: $('.js-dialog-close'),
+    $cancelButton: $('.js-dialog-cancel'),
+    appOverlay: 'app-timeout-warning-overlay',
     timers: [],
     // Timer specific markup. If these are not present, timeout and redirection are disabled
-    $timer: $('#js-modal-dialog .timer'),
-    $accessibleTimer: $('#js-modal-dialog .at-timer'),
+    $timer: $('#js-timeout-warning .timer'),
+    $accessibleTimer: $('#js-timeout-warning .at-timer'),
     // Timer specific settings. If these are not set, timeout and redirection are disabled
-    idleMinutesBeforeTimeOut: $('#js-modal-dialog').data('minutes-idle-timeout'),
-    timeOutRedirectUrl: $('#js-modal-dialog').data('url-redirect'),
-    minutesTimeOutModalVisible: $('#js-modal-dialog').data('minutes-modal-visible'),
+    idleMinutesBeforeTimeOut: $('#js-timeout-warning').data('minutes-idle-timeout'),
+    timeOutRedirectUrl: $('#js-timeout-warning').data('url-redirect'),
+    minutesTimeOutModalVisible: $('#js-timeout-warning').data('minutes-modal-visible'),
     timeUserLastInteractedWithPage: '',
 
     bindUIElements: function () {
@@ -50,7 +50,7 @@
     openDialog: function () {
       // TO DO: get last interactive time from server to see if modal should be opened
       if (!GOVUK.modalDialog.isDialogOpen()) {
-        $('html, body').addClass(GOVUK.modalDialog.dialogIsOpenClass)
+        $('html, body').addClass(GOVUK.modalDialog.appOverlay)
         GOVUK.modalDialog.saveLastFocusedEl()
         GOVUK.modalDialog.makePageContentInert()
         GOVUK.modalDialog.el.showModal()
@@ -66,7 +66,7 @@
     },
     closeDialog: function () {
       if (GOVUK.modalDialog.isDialogOpen()) {
-        $('html, body').removeClass(GOVUK.modalDialog.dialogIsOpenClass)
+        $('html, body').removeClass(GOVUK.modalDialog.appOverlay)
         GOVUK.modalDialog.el.close()
         GOVUK.modalDialog.setFocusOnLastFocusedEl()
         GOVUK.modalDialog.removeInertFromPageContent()
