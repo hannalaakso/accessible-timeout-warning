@@ -1,13 +1,10 @@
-import { nodeListForEach } from '../../common'
 import '../../vendor/polyfills/Function/prototype/bind'
 import '../../vendor/polyfills/Element/prototype/classList'
-
-// import 'vendor/dialog-polyfill.0.5.0.js'
 
 function TimeoutWarning ($module) {
   this.$module = $module
   this.$lastFocusedEl = null
-  this.$openButton = document.querySelector('.openModal')
+  // this.$openButton = document.querySelector('.openModal')
   this.$closeButton = $module.querySelector('.js-dialog-close')
   this.$cancelButton = $module.querySelector('.js-dialog-cancel')
   this.appOverlay = 'app-timeout-warning-overlay'
@@ -63,22 +60,22 @@ TimeoutWarning.prototype.isDialogOpen = function () {
 }
 
 TimeoutWarning.prototype.isTimerSet = function () {
-  return this.$timer && this.$accessibleTimer && this.idleMinutesBeforeTimeOut && this.minutesTimeOutModalVisible && this.timeOutRedirectUrl
+  return this.$timer &&
+         this.$accessibleTimer &&
+         this.idleMinutesBeforeTimeOut && this.minutesTimeOutModalVisible && this.timeOutRedirectUrl
 }
 
 TimeoutWarning.prototype.openDialog = function () {
   // TO DO: get last interactive time from server to see if modal should be opened
-  debugger
   if (!this.isDialogOpen()) {
     document.querySelector('body').classList.add(this.appOverlay)
     this.saveLastFocusedEl()
     this.makePageContentInert()
+    // polyfill?
     this.$module.showModal()
 
     if (this.isTimerSet()) {
-      // this.startTimer.bind(this)
       this.startTimer()
-
     }
 
     // if (window.history.pushState) {
@@ -89,7 +86,7 @@ TimeoutWarning.prototype.openDialog = function () {
 
 TimeoutWarning.prototype.closeDialog = function () {
   if (this.isDialogOpen()) {
-    ('html, body').removeClass(this.appOverlay)
+    document.querySelector('body').classList.remove(this.appOverlay)
     this.$module.close()
     this.setFocusOnLastFocusedEl()
     this.removeInertFromPageContent()
@@ -149,6 +146,7 @@ TimeoutWarning.prototype.removeInertFromPageContent = function () {
 // Starts a timer. If modal not closed before time out + 4 seconds grace period, user is redirected.
 TimeoutWarning.prototype.startTimer = function () {
   this.clearTimers() // Clear any other modal timers that might have been running
+  var $module = this
   var $timer = this.$timer
   var $accessibleTimer = this.$accessibleTimer
   var minutes = this.minutesTimeOutModalVisible
@@ -160,7 +158,6 @@ TimeoutWarning.prototype.startTimer = function () {
     // TO DO: Contact server to find last active time, in case modal is open in another tab, and update time left here accordingly
 
     var seconds = 60 * minutes
-
 
     $timer.innerHTML = minutes + ' minute' + (minutes > 1 ? 's' : '');
 
@@ -206,15 +203,14 @@ TimeoutWarning.prototype.startTimer = function () {
         if (window.localStorage) {
           window.localStorage.setItem('timeUserLastInteractedWithPage', '')
         }
-        setTimeout(this.redirect, 4000)
-
+        setTimeout($module.redirect, 4000)
       } else {
         seconds--
 
         $timer.innerHTML = text + extraText
 
         if (minutesLeft < 1 && secondsLeft < 20) {
-          $accessibleTimer.attr('aria-live', 'assertive')
+          $accessibleTimer.setAttribute('aria-live', 'assertive')
         }
 
         if (!timerRunOnce) {
@@ -223,12 +219,12 @@ TimeoutWarning.prototype.startTimer = function () {
           if (iOS) {
             $accessibleTimer.innerHTML = atText
           } else {
-            $accessibleTimer = atText + extraText
+            $accessibleTimer.innerHTML = atText + extraText
           }
           timerRunOnce = true
         } else if (secondsLeft % 15 === 0) {
           // Update screen reader friendly content every 15 secs
-          $accessibleTimer = atText
+          $accessibleTimer.innerHTML = atText
         }
 
         // JS doesn't allow resetting timers globally so timers need to be retained for resetting.
@@ -266,8 +262,8 @@ TimeoutWarning.prototype.idleTimeOut = function () {
     window.onload = resetTimer.bind(this)
     window.onmousemove = resetTimer.bind(this)
     window.onmousedown = resetTimer.bind(this) // Catches touchscreen presses
-    window.onclick = resetTimer.bind(this)     // Catches touchpad clicks
-    window.onscroll = resetTimer.bind(this)   // Catches scrolling with arrow keys
+    window.onclick = resetTimer.bind(this) // Catches touchpad clicks
+    window.onscroll = resetTimer.bind(this) // Catches scrolling with arrow keys
     window.onkeypress = resetTimer.bind(this)
     window.onkeyup = resetTimer.bind(this) // Catches Android keypad presses
   }
