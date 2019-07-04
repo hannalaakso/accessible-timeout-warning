@@ -8,6 +8,7 @@ import ErrorSummary from './components/error-summary/error-summary'
 import Header from './components/header/header'
 import Radios from './components/radios/radios'
 import Tabs from './components/tabs/tabs'
+import TimeoutWarning from './components/timeout-warning/timeout-warning'
 
 function initAll (options) {
   // Set the options to an empty object by default if no options are passed.
@@ -59,6 +60,11 @@ function initAll (options) {
   nodeListForEach($tabs, function ($tabs) {
     new Tabs($tabs).init()
   })
+
+  var $timeoutWarnings = scope.querySelectorAll('[data-module="govuk-timeout-warning"]')
+  nodeListForEach($timeoutWarnings, function ($timeoutWarning) {
+    new TimeoutWarning($timeoutWarning).init()
+  })
 }
 
 export {
@@ -71,5 +77,6 @@ export {
   ErrorSummary,
   Header,
   Radios,
-  Tabs
+  Tabs,
+  TimeoutWarning
 }
