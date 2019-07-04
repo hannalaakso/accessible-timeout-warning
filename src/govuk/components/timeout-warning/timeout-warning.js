@@ -7,7 +7,7 @@ function TimeoutWarning ($module) {
   // this.$openButton = document.querySelector('.openModal')
   this.$closeButton = $module.querySelector('.js-dialog-close')
   this.$cancelButton = $module.querySelector('.js-dialog-cancel')
-  this.appOverlay = 'app-timeout-warning-overlay'
+  this.appOverlay = 'govuk-timeout-warning-overlay'
   this.timers = []
   // Timer specific markup. If these are not present, timeout and redirection are disabled
   this.$timer = $module.querySelector('#js-timeout-warning .timer')
@@ -43,7 +43,7 @@ TimeoutWarning.prototype.init = function () {
 TimeoutWarning.prototype.bindUIElements = function () {
   // setTimeout(this.openDialog.bind(this), 6000) //debug
 
-  this.$openButton.addEventListener('click', this.openDialog.bind(this))
+  // this.$openButton.addEventListener('click', this.openDialog.bind(this))
 
   this.$closeButton.addEventListener('click', this.closeDialog.bind(this))
 

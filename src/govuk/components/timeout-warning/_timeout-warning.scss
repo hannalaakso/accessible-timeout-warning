@@ -1,6 +1,6 @@
 @import "vendor/dialog-polyfill.0.5.0";
 
-.app-timeout-warning {
+.govuk-timeout-warning {
   display: none;
   @include govuk-responsive-padding(6);
   // Setting width allows IE to center dialog vertically
@@ -36,7 +36,7 @@
 }
 
 // Stop background scrolling while dialog open.
-.app-timeout-warning-overlay {
+.govuk-timeout-warning-overlay {
   overflow: hidden;
 }
 
