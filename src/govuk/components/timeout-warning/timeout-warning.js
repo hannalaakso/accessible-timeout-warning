@@ -4,12 +4,10 @@ import '../../vendor/polyfills/Element/prototype/classList'
 function TimeoutWarning ($module) {
   this.$module = $module
   this.$lastFocusedEl = null
-  // this.$openButton = document.querySelector('.openModal')
   this.$closeButton = $module.querySelector('.js-dialog-close')
   this.$cancelButton = $module.querySelector('.js-dialog-cancel')
   this.overLayClass = 'govuk-timeout-warning-overlay'
   this.$fallBackElement = document.querySelector('.govuk-timeout-warning-fallback')
-  // Does this need to be an array?
   this.timers = []
   // UI countdown timer specific markup
   this.$countdown = $module.querySelector('.timer')
@@ -38,13 +36,13 @@ TimeoutWarning.prototype.init = function () {
 
   this.$closeButton.addEventListener('click', this.closeDialog.bind(this))
   this.$module.addEventListener('keydown', this.escClose.bind(this))
-  // this.$cancelButton.addEventListener('click', this.disableBackButtonWhenOpen.bind(this))
 
   // Debugging tip: This event doesn't kick in in Chrome if you have Inspector panel open and have clicked on it
   // as it is now the active element. Click on the window to make it active before moving to another tab.
   window.addEventListener('focus', this.checkIfShouldHaveTimedOut.bind(this))
 }
 
+// Check if browser supports native dialog element or can use polyfill
 TimeoutWarning.prototype.dialogSupported = function () {
   if (typeof HTMLDialogElement === 'function') {
     // Native dialog is supported by browser
@@ -55,9 +53,6 @@ TimeoutWarning.prototype.dialogSupported = function () {
       window.dialogPolyfill.registerDialog(this.$module)
       return true
     } catch (error) {
-      // if ((typeof console !== 'undefined' || typeof console.log !== 'undefined')) {
-      //   console.log(error)
-      // }
       // Doesn't support polyfill (IE8) - display fallback element
       this.$fallBackElement.classList.add('govuk-!-display-block')
       return false
@@ -88,8 +83,10 @@ TimeoutWarning.prototype.countIdleTime = function () {
     // Start new idle time
     idleTime = setTimeout(this.openDialog.bind(this), milliSecondsBeforeTimeOut)
 
-    // Store last interactive time for checkIfShouldHaveTimedOut()
-    // TO DO: tell server at intervals that user is active instead of storing last interaction time locally
+    // TO DO - Step A of client/server interaction
+    // Set last interactive time on server by periodically ping server
+    // with AJAX when user interacts with client side
+    // See setLastActiveTimeOnServer()
     if (window.localStorage) {
       window.localStorage.setItem('timeUserLastInteractedWithPage', new Date())
     }
@@ -97,12 +94,14 @@ TimeoutWarning.prototype.countIdleTime = function () {
 }
 
 TimeoutWarning.prototype.openDialog = function () {
-  // TO DO: get last interactive time from server to confirm dialog should be shown
+  // TO DO - Step B of client/server interaction
+  // GET last interactive time from server before showing warning
+  // User could be interacting with site in 2nd tab
+  // Update time left accordingly
   if (!this.isDialogOpen()) {
     document.querySelector('body').classList.add(this.overLayClass)
     this.saveLastFocusedEl()
     this.makePageContentInert()
-    // polyfill?
     this.$module.showModal()
 
     this.startUiCountdown()
@@ -113,7 +112,8 @@ TimeoutWarning.prototype.openDialog = function () {
   }
 }
 
-// Starts a UI countdown timer. If timer is not cancelled before 0 reached + 4 seconds grace period, user is redirected.
+// Starts a UI countdown timer. If timer is not cancelled before 0
+// reached + 4 seconds grace period, user is redirected.
 TimeoutWarning.prototype.startUiCountdown = function () {
   this.clearTimers() // Clear any other modal timers that might have been running
   var $module = this
@@ -123,8 +123,6 @@ TimeoutWarning.prototype.startUiCountdown = function () {
   var timerRunOnce = false
   var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
   var timers = this.timers
-
-  // TO DO: Contact server to find last active time, in case modal is open in another tab, and update time left here accordingly
 
   var seconds = 60 * minutes
 
@@ -166,12 +164,13 @@ TimeoutWarning.prototype.startUiCountdown = function () {
     var extraText = ' We do this to keep your information secure.'
 
     if (timerExpired) {
+      // TO DO - client/server interaction
+      // GET last interactive time from server before timing out user
+      // to ensure that user hasn’t interacted with site in another tab
+
       $countdown.innerHTML = 'You are about to be redirected'
       $accessibleCountdown.innerHTML = 'You are about to be redirected'
-      //TO DO: tell server to reset userlastinteractedwithpage
-      if (window.localStorage) {
-        window.localStorage.setItem('timeUserLastInteractedWithPage', '')
-      }
+
       setTimeout($module.redirect.bind($module), 4000)
     } else {
       seconds--
@@ -195,6 +194,12 @@ TimeoutWarning.prototype.startUiCountdown = function () {
         // Update screen reader friendly content every 15 secs
         $accessibleCountdown.innerHTML = atText
       }
+
+      // TO DO - client/server interaction
+      // GET last interactive time from server while the warning is being displayed.
+      // If user interacts with site in second tab, warning should be dismissed.
+      // Compare what server returned to what is stored in client
+      // If needed, call this.closeDialog()
 
       // JS doesn't allow resetting timers globally so timers need to be retained for resetting.
       timers.push(setTimeout(runTimer, 1000))
@@ -283,7 +288,11 @@ TimeoutWarning.prototype.escClose = function (event) {
 // This could happen but because the computer went to sleep, the browser crashed etc.
 TimeoutWarning.prototype.checkIfShouldHaveTimedOut = function () {
   if (window.localStorage) {
-    // TO DO: timeUsexrLastInteractedWithPage should in fact come from the server
+    // TO DO - client/server interaction
+    // GET last interactive time from server before timing out user
+    // to ensure that user hasn’t interacted with site in another tab
+
+    // If less time than data-minutes-idle-timeout left, call this.openDialog.bind(this)
     var timeUserLastInteractedWithPage = new Date(window.localStorage.getItem('timeUserLastInteractedWithPage'))
 
     var seconds = Math.abs((timeUserLastInteractedWithPage - new Date()) / 1000)
@@ -293,16 +302,24 @@ TimeoutWarning.prototype.checkIfShouldHaveTimedOut = function () {
       // if (seconds > 60) {
       this.redirect.bind(this)
     }
-
-    //   // TO DO: open modal if advised so by the server, tell modal how many seconds are left
-    // else if () {
-    //   this.openDialog.bind(this)
-    // }
   }
 }
 TimeoutWarning.prototype.redirect = function () {
   window.location.replace(this.timeOutRedirectUrl)
 }
+// Example function for sending last active time of user to server
+TimeoutWarning.prototype.setLastActiveTimeOnServer = function () {
+  //   var xhttp = new XMLHttpRequest()
+  //   xhttp.onreadystatechange = function () {
+  //     if (this.readyState === 4 && this.status === 200) {
+  //       var timeUserLastInteractedWithPage = new Date()
+  //     }
+  //   }
+  //
+  //   xhttp.open('POST', 'update-time-user-interacted-with-page.rb', true)
+  //   xhttp.send()
+}
+
 TimeoutWarning.prototype.numberToWords = function () {
   var string = n.toString()
   var units
