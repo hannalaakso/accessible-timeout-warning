@@ -6,6 +6,10 @@
 
   // Modal dialog prototype
   GOVUK.modalDialog = {
+    containerSelector: '#content',
+    redirectWarningMessage: 'You are about to be redirected',
+    keepYouSecureMessage: 'We do this to keep your information secure.',
+    warningMessage: 'We will reset your application if you do not respond in',
     el: document.getElementById('js-modal-dialog'),
     $el: $('#js-modal-dialog'),
     $lastFocusedEl: null,
@@ -24,7 +28,6 @@
     timeUserLastInteractedWithPage: '',
 
     bindUIElements: function () {
-      setTimeout(GOVUK.modalDialog.openDialog, 6000) //debug
 
       GOVUK.modalDialog.$openButton.on('click', function (e) {
         GOVUK.modalDialog.openDialog()
@@ -104,17 +107,17 @@
     // Set page content to inert to indicate to screenreaders it's inactive
     // NB: This will look for #content for toggling inert state
     makePageContentInert: function () {
-      if (document.querySelector('#content')) {
-        document.querySelector('#content').inert = true
-        document.querySelector('#content').setAttribute('aria-hidden', 'true')
+      if (document.querySelector(this.containerSelector)) {
+        document.querySelector(this.containerSelector).inert = true
+        document.querySelector(this.containerSelector).setAttribute('aria-hidden', 'true')
       }
     },
     // Make page content active when modal is not open
     // NB: This will look for #content for toggling inert state
     removeInertFromPageContent: function () {
-      if (document.querySelector('#content')) {
-        document.querySelector('#content').inert = false
-        document.querySelector('#content').setAttribute('aria-hidden', 'false')
+      if (document.querySelector(this.containerSelector)) {
+        document.querySelector(this.containerSelector).inert = false
+        document.querySelector(this.containerSelector).setAttribute('aria-hidden', 'false')
       }
     },
     // Starts a timer. If modal not closed before time out + 4 seconds grace period, user is redirected.
@@ -156,8 +159,8 @@
 
           // Below string will get read out by screen readers every time the timeout refreshes (every 15 secs. See below).
           // Please add additional information in the modal body content or in below extraText which will get announced to AT the first time the time out opens
-          var text = 'We will reset your application if you do not respond in ' + minutesText + secondsText + '.'
-          var atText = 'We will reset your application if you do not respond in ' + atMinutesText
+          var text = GOVUK.modalDialog.warningMessage +  ' ' + minutesText + secondsText + '.'
+          var atText = GOVUK.modalDialog.warningMessage +  ' ' + atMinutesText
           if (atSecondsText) {
             if (minutesLeft > 0) {
               atText += ' and'
@@ -166,11 +169,11 @@
           } else {
             atText += '.'
           }
-          var extraText = ' We do this to keep your information secure.'
+          var extraText = ' ' + GOVUK.modalDialog.keepYouSecureMessage;
 
           if (timerExpired) {
-            $timer.text('You are about to be redirected')
-            $accessibleTimer.text('You are about to be redirected')
+            $timer.text(GOVUK.modalDialog.redirectWarningMessage)
+            $accessibleTimer.text(GOVUK.modalDialog.redirectWarningMessage)
             //TO DO: tell server to reset userlastinteractedwithpage
             if (window.localStorage) {
               window.localStorage.setItem('timeUserLastInteractedWithPage', '')
@@ -262,8 +265,7 @@
 
           var seconds = Math.abs((timeUserLastInteractedWithPage - new Date()) / 1000)
 
-          // TO DO: use both idlemin and timemodalvisible
-          if (seconds > GOVUK.modalDialog.idleMinutesBeforeTimeOut * 60) {
+          if (seconds > (GOVUK.modalDialog.idleMinutesBeforeTimeOut + GOVUK.modalDialog.minutesTimeOutModalVisible)  * 60) {
 
         //  if (seconds > 60) {
             GOVUK.modalDialog.redirect()

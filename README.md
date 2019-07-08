@@ -55,7 +55,12 @@ Run `npm start`
 
 1. Include the markup from `app/views/includes/modal_dialog.html` on your page.
 
-2. The script looks for a `#content` div on the page to set the `inert` attribute. Please change this to match name of your main container in `makePageContentInert` and `removeInertFromPageContent` in `javascripts/modal-dialog.js`. This indicates the active part of the page to screenreaders.
+2. The script looks for a `#content` div on the page to set the `inert` attribute. Please change this to match name of your main container by overriding the selector property in your app
+    ~~~
+    var GOVUK = global.GOVUK || {};
+    GOVUK.modalDialog.containerSelector = '.main-content';
+    ~~~
+    This indicates the active part of the page to screenreaders.
 
 3. Include `sass/patterns/_modal-dialog.scss` as part of your SASS.
 
