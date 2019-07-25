@@ -1,23 +1,20 @@
 language: node_js
-node_js:
-- 4.0
-- 6.0
-before_deploy:
-- test $TRAVIS_TEST_RESULT = 0
-before_install:
-- npm install -g mocha
-deploy:
-- provider: script    # (If version.txt is updated) - create a new tag and push to Github, update the latest-release branch
-  script: ./create-release.sh
-  on: master
-- provider: heroku
-  api_key:
-    secure: h/9/Rcd41XVU4VYYeBoKKvG6uShEoDksCGGZ/2dgeY1f3tYnhGzzgL6TIkvhafwDbKk2Y4o6d/MI05K+s7lorf2uTKpr1To2o52hQqmb4YREPWruZtBqoRo5X4nCeN2oEdW+yJRH3jZDNUmwkPzjytqxkcUUUeDPHfz3+xCtSZk=
-  app: govuk-prototype-kit
-  on: master
 notifications:
   email: false
 sudo: false
-env:
-  global:
-  - secure: esj3ut+TwKX25QzU1koJyTVIX+x1V55graI65X8LiYXKcOP040VPJ9lIC0HeRs5UViBM0Ur1F93rGdgW2zYVzu5MLZoH7KjpzMcG30x+FDqLChT0JfNcLLtLm/wIhx/OAAmsBxXlvjPp092BeEKd3Jug8d329TxwwK5G5XxAatg=
+before_deploy:
+- test $TRAVIS_TEST_RESULT = 0
+jobs:
+  include:
+    - stage: Run npm test
+      script:
+      # Ensure Travis aborts without running tests if the package-lock.json file needs updating
+      - set -e
+      - ./bin/check-package-lock.sh
+      # TravisCI is slower than our local machines, so results in intermittent timeouts
+      # using the `--runInBand` flag we can force it to without requiring as much
+      # resources (https://facebook.github.io/jest/docs/en/troubleshooting.html#tests-are-extremely-slow-on-docker-and-or-continuous-integration-ci-server)
+      - npm test -- --runInBand
+    # Heroku is configured to automatically deploy the following branches
+    # once CI passes:
+    # master         -> http://govuk-frontend-review.herokuapp.com/

@@ -1,64 +1,113 @@
-# Accessible timeout warning ·
+GOV.UK Frontend ·
+[![Build Status](https://travis-ci.org/alphagov/govuk-frontend.svg?branch=master)](https://travis-ci.org/alphagov/govuk-frontend)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+=====================
 
-Timeout warning is a component that:
+GOV.UK Frontend contains the code you need to start building a user interface
+for government platforms and services.
 
-- Is shown after a period of inactivity
-- Warns users before a session timeout that they’re about to time out
-- Allows users to extend their session
-- Offers alternate options if they don’t want to extend
-- Requests user to take action and tells them how much time they have to do so
-- Provides information to assistive technology so users with access needs are well supported
+See live examples of GOV.UK Frontend components, and guidance on when to use
+them in your service, in the [GOV.UK Design
+System](https://design-system.service.gov.uk/).
 
-## User story
+## Contact the team
 
-As an Assistive Technology (AT) user, I want to be informed that a modal dialog has opened, what its purpose is, and how to action / close it.
+GOV.UK Frontend is maintained by a team at Government Digital Service. If you want to know more about GOV.UK Frontend, please email the [Design System
+team](mailto:govuk-design-system-support@digital.cabinet-office.gov.uk) or get in touch with them on [Slack](https://ukgovernmentdigital.slack.com/messages/govuk-design-system).
 
-## Accessibility acceptance criteria
+## Quick start
 
-The modal dialog must:
-1. Be focusable with a keyboard. (If an element eg. button triggers the dialog, that element must also be keyboard focusable.)
-2. Inform user that an alert dialog has opened
-3. Constrain focus to dialog
-4. Return focus to element that had focus before the dialog was invoked.
-5. Be possible to close. Be clear how to close. Examples of ways to close are pressing Esc and a close button.
-6. Underlying page content must not look actionable.
-7. Prevent user searching in the underlying page.
-8. Prevent scrolling of the underlying page.
-9. Should always be visible - regardless of scrolling, screen size or orientation changes.
+There are 2 ways to start using GOV.UK Frontend in your app.
 
-Where multiple modals are open, above criteria apply to top-most one.
+Once installed, you will be able to use the code from the examples in the
+[GOV.UK Design System](https://design-system.service.gov.uk/)
+in your service.
 
-## Keyboard Interaction
+### 1. Install with npm (recommended)
 
-- Screen reader users may not rely on the tab key to interact with the dialogue content.
-- Screen readers have many keyboard commands for interacting with content and it's important that the way the dialogue is implemented doesn't prevent them from being usable.
-- Could we use [this](https://www.paciellogroup.com/blog/2015/01/basic-screen-reader-commands-for-accessibility-testing/) as the list of commands for testing?
+We recommend [installing GOV.UK Frontend using node package manager
+(npm)](docs/installation/installing-with-npm.md).
 
-### Tab:
-* Moves focus to the next focusable element inside the dialog.
-* If focus is on the last element, moves focus to the first focusable element inside the dialog.
+### 2. Install by using compiled files
 
-### Shift + Tab:
-* Moves focus to the previous focusable element inside the dialog.
-* If focus is on the first element, moves focus to the last focusable element inside the dialog.
+You can also [download the compiled and minified assets (CSS, JavaScript) from
+GitHub](docs/installation/installing-from-dist.md).
 
-### Escape:
-* Closes the dialog.
+## Browser support
 
-## To run locally
+GOV.UK Frontend will allow you to build services that comply with the [guidance
+in the Service Manual][service-manual-browsers].
 
-Run `npm install`
+Currently, GOV.UK Frontend officially supports the following browsers:
 
-Run `npm start`
+| Operating system | Browser                                | Support     |
+|----------------- |----------------------------------------|-------------|
+| Windows          | Internet Explorer 8-10                 | functional  |
+| Windows          | Internet Explorer 11                   | compliant   |
+| Windows          | Edge (latest 2 versions)               | compliant   |
+| Windows          | Google Chrome (latest 2 versions)      | compliant   |
+| Windows          | Mozilla Firefox (latest 2 versions)    | compliant   |
+| macOS            | Safari 9+                              | compliant   |
+| macOS            | Google Chrome (latest 2 versions)      | compliant   |
+| macOS            | Mozilla Firefox (latest 2 versions)    | compliant   |
+| iOS              | Safari for iOS 9.3+                    | compliant   |
+| iOS              | Google Chrome (latest 2 versions)      | compliant   |
+| Android          | Google Chrome (latest 2 versions)      | compliant   |
+| Android          | Samsung Internet (latest 2 versions)   | compliant   |
 
-## To integrate this component into your app
+‘Compliant’ means that the components must look as good and function as well as
+they do in other modern browsers.
 
-1. Include the markup from `app/views/includes/modal_dialog.html` on your page.
+'Functional' means the components may not look perfect in the given browser, but
+must still be usable without errors and without 'looking broken'.
 
-2. The script looks for a `#content` div on the page to set the `inert` attribute. Please change this to match name of your main container in `makePageContentInert` and `removeInertFromPageContent` in `javascripts/modal-dialog.js`. This indicates the active part of the page to screenreaders.
+If you are including GOV.UK Frontend as part of a stylesheet that you are
+generating in your application's build pipeline, you will need to [generate and
+include a separate stylesheet in order to support Internet Explorer
+8](docs/installation/supporting-internet-explorer-8.md).
 
-3. Include `sass/patterns/_modal-dialog.scss` as part of your SASS.
+[service-manual-browsers]: https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices#browsers-to-test-in
 
-4. Include `/javascripts/dialog.polyfill.0.4.3.js` and `javascripts/modal-dialog.js` on your page or as part of your JavaScript bundle.
+## Assistive technology support
 
-5. Initialise the JavaScript in `javascripts/application.js` with  `GOVUK.modalDialog.init()`
+GOV.UK Frontend will allow you to build services that comply with the [guidance
+in the Service Manual][service-manual-assistive-technologies].
+
+Currently, GOV.UK Frontend officially supports the following assistive technologies:
+
+| Software                 | Version        | Type               | Browser                   |
+|--------------------------|----------------|--------------------|---------------------------|
+| JAWS                     | 15 or later    | screen reader      | Internet Explorer 11      |
+| ZoomText                 | 10.11 or later | screen magnifier   | Internet Explorer 11      |
+| Dragon NaturallySpeaking | 11 or later    | speech recognition | Internet Explorer 11      |
+| NVDA                     | 2016 or later  | screen reader      | Firefox (latest versions) |
+| VoiceOver                | 7.0 or later   | screen reader      | Safari on iOS10 and OS X  |
+
+In addition, we test that all content is accessible with keyboard only.
+
+We aim to support [users who adjust or override the colours of websites they visit][how-users-change-colours-on-websites]. We test this by [changing colours in Firefox][changing-colours-in-firefox], by [enabling 'High Contrast' mode in Windows][enabling-high-contrast-mode-in-windows] and by using the [High Contrast plugin for Chrome][high-contrast-plugin-for-chrome].
+
+[service-manual-assistive-technologies]: https://www.gov.uk/service-manual/technology/testing-with-assistive-technologies#what-to-test
+
+[changing-colours-in-firefox]:
+https://support.mozilla.org/en-US/kb/change-fonts-and-colors-websites-use
+
+[enabling-high-contrast-mode-in-windows]:
+https://support.microsoft.com/en-gb/help/13862/windows-use-high-contrast-mode
+
+[high-contrast-plugin-for-chrome]: https://chrome.google.com/webstore/detail/high-contrast/djcfdncoelnlbldjfhinnjlhdjlikmph?hl=en-US
+
+[how-users-change-colours-on-websites]:
+https://accessibility.blog.gov.uk/2017/03/27/how-users-change-colours-on-websites/
+
+## Licence
+
+Unless stated otherwise, the codebase is released under the MIT License. This
+covers both the codebase and any sample code in the documentation. The
+documentation is &copy; Crown copyright and available under the terms of the
+Open Government 3.0 licence.
+
+## Contribution guidelines
+
+If you want to help us build GOV.UK Frontend, view our [contribution
+guidelines](CONTRIBUTING.md).
