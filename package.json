@@ -113,5 +113,8 @@
     "snapshotSerializers": [
       "jest-serializer-html"
     ]
+  },
+  "dependencies": {
+    "govuk-frontend": "^2.13.0"
   }
 }
