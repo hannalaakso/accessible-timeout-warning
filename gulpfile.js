@@ -9,6 +9,7 @@ const taskArguments = require('./tasks/gulp/task-arguments');
 require('./tasks/gulp/clean.js');
 require('./tasks/gulp/lint.js');
 require('./tasks/gulp/compile-assets.js');
+// require('./tasks/gulp/compile-timeout-warning.js');
 require('./tasks/gulp/nodemon.js');
 require('./tasks/gulp/watch.js');
 // new tasks
@@ -46,6 +47,8 @@ gulp.task('test', gulp.series('scss:lint', 'scss:compile'));
 // --------------------------------------
 gulp.task('copy-assets', gulp.series('styles', 'scripts'));
 
+gulp.task('copy-scripts-only', gulp.series('scripts'));
+
 // Serve task ---------------------------
 // Restarts node app when there is changed
 // affecting js, css or njk files
@@ -65,6 +68,7 @@ gulp.task(
   'build:dist',
   gulp.series('clean', 'copy-assets', 'copy:assets', 'update-assets-version')
 );
+gulp.task('build:timeoutwarning', gulp.series('copy-scripts-only'));
 
 // Default task -------------------------
 // Lists out available tasks.

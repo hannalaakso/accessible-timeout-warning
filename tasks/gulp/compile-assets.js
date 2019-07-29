@@ -200,40 +200,42 @@ gulp.task('scss:compile', () => {
 // Compile js task for preview ----------
 // --------------------------------------
 gulp.task('js:compile', () => {
-  // for dist/ folder we only want compiled 'all.js' file
+  // for dist/ folder we only want compiled 'timeout-warning-all.js' file
   let srcFiles = isDist
-    ? configPaths.src + 'all.js'
+    ? configPaths.src + 'timeout-warning-all.js'
     : configPaths.src + '**/*.js';
 
-  return gulp
-    .src([srcFiles, '!' + configPaths.src + '**/*.test.js'])
-    .pipe(
-      rollup({
-        // Used to set the `window` global and UMD/AMD export name.
-        name: 'GOVUKFrontend',
-        // Legacy mode is required for IE8 support
-        legacy: true,
-        // UMD allows the published bundle to work in CommonJS and in the browser.
-        format: 'umd'
-      })
-    )
-    .pipe(
-      gulpif(
-        isDist,
-        uglify({
-          ie8: true
+  return (
+    gulp
+      .src([srcFiles, '!' + configPaths.src + '**/*.test.js'])
+      .pipe(
+        rollup({
+          // Used to set the `window` global and UMD/AMD export name.
+          name: 'GOVUKFrontend',
+          // Legacy mode is required for IE8 support
+          legacy: true,
+          // UMD allows the published bundle to work in CommonJS and in the browser.
+          format: 'umd'
         })
       )
-    )
-    .pipe(
-      gulpif(
-        isDist,
-        rename({
-          basename: 'govuk-frontend',
-          extname: '.min.js'
-        })
+      // .pipe(
+      //   gulpif(
+      //     isDist,
+      //     uglify({
+      //       ie8: true
+      //     })
+      //   )
+      // )
+      .pipe(
+        gulpif(
+          isDist,
+          rename({
+            basename: 'govuk-timeout-warning',
+            extname: '.min.js'
+          })
+        )
       )
-    )
-    .pipe(eol())
-    .pipe(gulp.dest(destinationPath));
+      .pipe(eol())
+      .pipe(gulp.dest(destinationPath))
+  );
 });
