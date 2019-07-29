@@ -1,15 +1,6 @@
 {
-  "nunjucksPaths": [
-    "/",
-    "/components"
-  ],
-  "scripts": [
-    "/all.js"
-  ],
-  "assets": [
-    "/assets"
-  ],
-  "sass": [
-    "/all.scss"
-  ]
+  "nunjucksPaths": ["/", "/components"],
+  "scripts": ["/all.js"],
+  "assets": ["/assets"],
+  "sass": ["/all.scss"]
 }
